@@ -161,163 +161,180 @@ const updateUI = function (acc) {
 ///////////////////////////////////////
 // Event handlers
 let currentAccount;
+let time = 120
+const timeToLogout = setInterval(() => {
 
-btnLogin.addEventListener('click', function (e) {
-  // Prevent form from submitting
-  e.preventDefault();
+      const tick = function () {
+        let mins = String(Math.trunc(120 / 60)).padStart(2, 0)
+        let seconds = String(time % 60).padStart(2, 0)
+        labelTimer.textContent = `${mins}:${seconds}`
+      }
 
-  currentAccount = accounts.find(
-    acc => acc.username === inputLoginUsername.value
-  );
-
-
-  if (currentAccount ?.pin === Number(inputLoginPin.value)) {
-    // Display UI and message
-    labelWelcome.textContent = `Welcome back, ${
-      currentAccount.owner.split(' ')[0]
-    }`;
-
-    //date
-
-    const currentDate = new Date()
-    const date = `${currentDate.getDate()}`.padStart(2, 0)
-    const month = `${currentDate.getMonth()+1}`.padStart(2, 0)
-    const year = `${currentDate.getFullYear()}`
+      tick()
 
 
-
-    labelDate.textContent = `${date}/${month}/${year}`
-    containerApp.style.opacity = 100;
-
-    // Clear input fields
-    inputLoginUsername.value = inputLoginPin.value = '';
-    inputLoginPin.blur();
-
-    // Update UI
-    updateUI(currentAccount);
-    // console.log(document.querySelectorAll(".movements__row"))
-
-  }
-});
-
-btnTransfer.addEventListener('click', function (e) {
-  e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
-  const receiverAcc = accounts.find(
-    acc => acc.username === inputTransferTo.value
-  );
-  inputTransferAmount.value = inputTransferTo.value = '';
-
-  if (
-    amount > 0 &&
-    receiverAcc &&
-    currentAccount.balance >= amount &&
-    receiverAcc ?.username !== currentAccount.username
-  ) {
-    // Doing the transfer
-    currentAccount.movements.push(-amount);
-    currentAccount.movementsDates.push(new Date().toISOString())
-    receiverAcc.movements.push(amount);
-    receiverAcc.movementsDates.push(new Date().toISOString())
-
-    // Update UI
-    updateUI(currentAccount);
-  }
-});
+    )
 
 
 
 
-btnLoan.addEventListener('click', function (e) {
-  e.preventDefault();
-
-  const amount = Math.floor(inputLoanAmount.value);
-
-  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-    // Add movement
-    currentAccount.movements.push(amount);
-    currentAccount.movementsDates.push(new Date().toISOString())
-
-    // Update UI
-    updateUI(currentAccount);
-  }
-  inputLoanAmount.value = '';
-});
 
 
+    btnLogin.addEventListener('click', function (e) {
+      // Prevent form from submitting
+      e.preventDefault();
 
+      currentAccount = accounts.find(
+        acc =>    acc.username === inputLoginUsername.value
+      );
 
-btnClose.addEventListener('click', function (e) {
-  e.preventDefault();
+ if (currentAccount ?.pin === Number(inputLoginPin.value)) {
+                                      // Display UI and message
+        labelWelcome.textContent = `Welcome back, ${
+                                    currentAccount.owner.split(' ')[0]
+                                  }`;
 
-  if (
-    inputCloseUsername.value === currentAccount.username &&
-    Number(inputClosePin.value) === currentAccount.pin
-  ) {
-    const index = accounts.findIndex(
-      acc => acc.username === currentAccount.username
-    );
-    console.log(index);
-    // .indexOf(23)
+        //date
 
-    // Delete account
-    accounts.splice(index, 1);
-
-    // Hide UI
-    containerApp.style.opacity = 0;
-  }
-
-  inputCloseUsername.value = inputClosePin.value = '';
-});
-
-let sorted = false;
-btnSort.addEventListener('click', function (e) {
-  e.preventDefault();
-  displayMovements(currentAccount.movements, !sorted);
-  sorted = !sorted;
-});
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
-// console.log(Number.isFinite(+"23"));
-
-// const randomNum=function(min,max){
-//   return Math.floor(Math.random()*(max-min)+1)+min;
-// }
-
-
-// //round off to nearest integer
-// console.log(Math.round(1.9));
-
-// //remove the floating point value
-// console.log(Math.trunc(-1.9));
-
-// //floor down to integer value
-// console.log(Math.floor(-1.9));
-
-// //ciel up to higher integer value
-// console.log(Math.ceil(1.1));
+        const currentDate = new Date()
+        const date = `${currentDate.getDate()}`.padStart(2, 0)
+        const month = `${currentDate.getMonth()+1}`.padStart(2, 0)
+        const year = `${currentDate.getFullYear()}`
 
 
 
-// //round off according to argument
-// console.log(+(2.70457).toFixed(0));
+        labelDate.textContent = `${date}/${month}/${year}`
+        containerApp.style.opacity = 100;
 
-// labelBalance.addEventListener("click", function(){
+        // Clear input fields
+        inputLoginUsername.value = inputLoginPin.value = '';
+        inputLoginPin.blur();
 
-// [...document.querySelectorAll(".movements__row")].forEach((row,i)=>
-//   {
-//   if(i%2===0)row.style.backgroundColor="orange";
-//   else row.style.backgroundColor="blue"
-// })
-// }
-// )
+        // Update UI
+        updateUI(currentAccount);
+        // console.log(document.querySelectorAll(".movements__row"))
+
+      }
+    });
+
+
+    btnTransfer.addEventListener('click', function (e) {
+      e.preventDefault();
+      const amount = Number(inputTransferAmount.value);
+      const receiverAcc = accounts.find(
+        acc => acc.username === inputTransferTo.value
+      );
+      inputTransferAmount.value = inputTransferTo.value = '';
+
+      if (
+        amount > 0 &&
+        receiverAcc &&
+        currentAccount.balance >= amount &&
+        receiverAcc ? .username !== currentAccount.username
+      ) {
+        // Doing the transfer
+        currentAccount.movements.push(-amount);
+        currentAccount.movementsDates.push(new Date().toISOString())
+        receiverAcc.movements.push(amount);
+        receiverAcc.movementsDates.push(new Date().toISOString())
+
+        // Update UI
+        updateUI(currentAccount);
+      }
+    });
 
 
 
-// const a=BigInt(1045459713167987465498798465498744)
-// console.log(9007199254740991123333333333333333);
 
-// const fuure=
+    btnLoan.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const amount = Math.floor(inputLoanAmount.value);
+
+      if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+        // Add movement
+        currentAccount.movements.push(amount);
+        currentAccount.movementsDates.push(new Date().toISOString())
+
+        // Update UI
+        updateUI(currentAccount);
+      }
+      inputLoanAmount.value = '';
+    });
+
+
+
+
+    btnClose.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      if (
+        inputCloseUsername.value === currentAccount.username &&
+        Number(inputClosePin.value) === currentAccount.pin
+      ) {
+        const index = accounts.findIndex(
+          acc => acc.username === currentAccount.username
+        );
+        console.log(index);
+        // .indexOf(23)
+
+        // Delete account
+        accounts.splice(index, 1);
+
+        // Hide UI
+        containerApp.style.opacity = 0;
+      }
+
+      inputCloseUsername.value = inputClosePin.value = '';
+    });
+
+    let sorted = false; btnSort.addEventListener('click', function (e) {
+      e.preventDefault();
+      displayMovements(currentAccount.movements, !sorted);
+      sorted = !sorted;
+    });
+
+    /////////////////////////////////////////////////
+    /////////////////////////////////////////////////
+    // LECTURES
+
+    // console.log(Number.isFinite(+"23"));
+
+    // const randomNum=function(min,max){
+    //   return Math.floor(Math.random()*(max-min)+1)+min;
+    // }
+
+
+    // //round off to nearest integer
+    // console.log(Math.round(1.9));
+
+    // //remove the floating point value
+    // console.log(Math.trunc(-1.9));
+
+    // //floor down to integer value
+    // console.log(Math.floor(-1.9));
+
+    // //ciel up to higher integer value
+    // console.log(Math.ceil(1.1));
+
+
+
+    // //round off according to argument
+    // console.log(+(2.70457).toFixed(0));
+
+    // labelBalance.addEventListener("click", function(){
+
+    // [...document.querySelectorAll(".movements__row")].forEach((row,i)=>
+    //   {
+    //   if(i%2===0)row.style.backgroundColor="orange";
+    //   else row.style.backgroundColor="blue"
+    // })
+    // }
+    // )
+
+
+
+    // const a=BigInt(1045459713167987465498798465498744)
+    // console.log(9007199254740991123333333333333333);
+
+    // const fuure=
